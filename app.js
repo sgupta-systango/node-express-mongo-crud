@@ -1,4 +1,4 @@
-//Import some modules
+//Import some node modules
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -6,9 +6,14 @@ const path = require('path');
 const hbs = require('express-handlebars');
 const upload = require('express-fileupload')
 const flash = require('connect-flash')
-const mongoose = require('mongoose')
 const handlebars = require('handlebars')
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
+
+//importing dbconnect module
+const dbconnect = require('./config/dbconnect')
+
+//importing user routes
+const Users = require('./routes/user.routes')
 
 //defining port
 const PORT = process.env.PORT || 3000;
@@ -28,9 +33,8 @@ app.engine('hbs',hbs({
     handlebars:allowInsecurePrototypeAccess(handlebars)
 }));
 
-//Get Url Of Mongodb to connect
-const URL="mongodb://localhost:27017/nodeexpressmondocrud";
-mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true })
+//call the dbconnect to connect to mongoose localhost server
+dbconnect();
 
 //to use for uploading files
 app.use(upload())
@@ -55,9 +59,6 @@ app.use(express.static(path.join(__dirname,'views')));
 
 //Find the upload directory to access files
 app.use(express.static('upload'))
-
-//importing user routes
-const Users = require('./routes/user.routes')
 
 //caching disabled for everyone
 app.use(function(request,response,next){
