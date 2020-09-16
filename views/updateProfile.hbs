@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+{{#if msg1}}
+    <div class="alert alert-danger alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>{{msg1}}</strong>
+    </div>
+{{/if}}
 <body>
     <form action="updateProfileAction" method="post">
         <div class="form-group">
