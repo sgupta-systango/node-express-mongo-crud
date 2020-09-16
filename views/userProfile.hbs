@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>profile</title>
+</head>
+{{#if msg}}
+    <div class="alert alert-success alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>{{msg}}</strong>
+    </div>
+{{/if}}
+{{#if msg1}}
+    <div class="alert alert-danger alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>{{msg1}}</strong>
+    </div>
+{{/if}}
+<body>
+    <div class="col-md-5">
+        <h2 class="text-dark">Profile</h2> 
+        <div class="d-flex justify-content-between align-items-center mb-3 bg-white">    
+            <table class="table table-responsive">
+                <tr><th>Name</th><td>{{userData.name}}</td></tr>
+                <tr><th>Email</th><td>{{userData.email}}</td></tr>   
+                <tr><th>Mobile No.</th><td>{{userData.mobile}}</td></tr>       
+            </table>
+        </div>
+        <a href="editUserProfile"><button class="btn btn-success">Edit Profile</button></a>
+    </div>
+</body>
+</html>

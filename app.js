@@ -1,0 +1,75 @@
+//Import some modules
+const express = require('express');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const path = require('path');
+const hbs = require('express-handlebars');
+const upload = require('express-fileupload')
+const flash = require('connect-flash')
+const mongoose = require('mongoose')
+const handlebars = require('handlebars')
+const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
+
+//defining port
+const PORT = process.env.PORT || 3000;
+
+//create app of express js
+const app = express();
+
+//configure view engine as hbs
+app.set('views',path.join(__dirname,'views'))  
+app.set('view engine', 'hbs'); 
+
+//set main layout to every pages
+app.engine('hbs',hbs({                
+    extname:'hbs',
+    defaultLayout:'mainlayout',
+    layoutDir:__dirname+'/views/layouts',
+    handlebars:allowInsecurePrototypeAccess(handlebars)
+}));
+
+//Get Url Of Mongodb to connect
+const URL="mongodb://localhost:27017/nodeexpressmondocrud";
+mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true })
+
+//to use for uploading files
+app.use(upload())
+
+//to use for sending msg when redirecting
+app.use(flash())
+
+//configure body parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); 
+
+//secret Key encreption for session value
+app.use(session({
+    secret: "secret@#$%!1234bcdni",
+    cookie:{maxAge:(30 * 86400 * 1000)},
+    resave: false,
+    saveUninitialized: false
+}));
+
+//to link stacic contents like js & css into views
+app.use(express.static(path.join(__dirname,'views')));
+
+//Find the upload directory to access files
+app.use(express.static('upload'))
+
+//importing user routes
+const Users = require('./routes/user.routes')
+
+//caching disabled for everyone
+app.use(function(request,response,next){
+    response.set('Cache-Control','no-cache,private,no-store,must-revalidate,max-state=0,post-check=0,pre-check=0');
+    next();
+})
+
+//configure routes
+app.use('/', Users)
+
+
+//server configuration
+app.listen(PORT, () => {
+    console.log(`Server started at http://localhost:${PORT}`)
+})
