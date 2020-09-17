@@ -15,6 +15,9 @@ const dbconnect = require('./config/dbconnect')
 //importing user routes
 const Users = require('./routes/user.routes')
 
+//importing products routes
+const Products = require('./routes/product.routes')
+
 //defining port
 const PORT = process.env.PORT || 3000;
 
@@ -68,7 +71,6 @@ app.use(function(request,response,next){
 
 //configure routes
 app.use('/', Users)
-
 
 //server configuration
 app.listen(PORT, () => {

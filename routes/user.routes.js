@@ -3,7 +3,7 @@ const router = express.Router();
 const user = require('../controllers/user.controllers')
 const validate = require('../utility/validate')
 const checkSession = require('../utility/auth')
-const findUser = require('../utility/user.middleware')
+const userMiddleware = require('../utility/user.middleware')
 
 //route for user index
 router.get('/', user.index)
@@ -15,7 +15,7 @@ router.get('/signup', user.signup)
 router.get('/login', user.login)
 
 //route for user signupAction
-router.post('/signupAction', validate.signup, findUser.byEmailAndMobile, user.signupAction)
+router.post('/signupAction', validate.signup, userMiddleware.emailAndMobileCheck, user.signupAction)
 
 //route for user loginAction
 router.post('/loginAction', validate.login, user.loginAction)
@@ -36,7 +36,7 @@ router.post('/resetPasswordAction', checkSession, user.passwordAction)
 router.get('/editUserProfile', checkSession,  user.editProfile)
 
 //route for user updateProfile
-router.post('/updateProfileAction', checkSession, findUser.mobileCheck, user.updateProfile)
+router.post('/updateProfileAction', checkSession, userMiddleware.mobileCheckForUpdate, user.updateProfile)
 
 //route for user logout
 router.get('/logout', user.logout)

@@ -19,28 +19,20 @@ module.exports.signup = (req, res) => {
 module.exports.signupAction = (req, res, next) => {
     try{
         const { name, email, mobile ,password } = req.body;
-        const resultUser = req.userResult;
-        if(resultUser) {
-            if(resultUser.email == email) {
-                res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('signup',{ msg1:'email already exist' })
-            } else if(resultUser.mobile == mobile) {
-                res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('signup',{ msg1:'mobile no. already exist' })
+        const newUser = new user({
+        name : name,
+        email : email,
+        mobile : mobile
+        });
+        newUser.setPassword(password);
+        newUser.save((err) => {
+            if(err) throw err;
+            else {
+                res.status(config.statusCode.CREATED).render('login',{msg:'registration successful', index:'index'})
             }
-        } else {
-            const newUser = new user()
-            newUser.name=name,
-            newUser.email=email,
-            newUser.mobile=mobile,
-            newUser.setPassword(password)
-            newUser.save((err,user) => {
-                if(err) throw err;
-                else {
-                    res.status(config.statusCode.CREATED).render('login',{msg:'registration successful', index:'index'})
-                }
-            })
-        }
-        } catch(err) {
-        console.log(err);
+        })
+    } catch(err) {
+    console.log(err);
     }
 }
 
@@ -53,11 +45,11 @@ module.exports.login = (req, res) => {
 module.exports.loginAction =  async (req, res, next) => {
     try{
         const { email, password } = req.body;
-        const resultUser = await user.findOne({email:email});
-            if(resultUser) {
-                if (resultUser.validPassword(password)) { 
-                    req.session.user = resultUser;
-                    res.render('userHome',{uid:req.session.user.email}) 
+        const result = await user.findOne({email:email});
+            if(result) {
+                if (result.validPassword(password)) { 
+                    req.session.user = result;
+                    res.render('userHome',{uid:result.email}) 
                 } else { 
                     res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('login',{msg1:config.message.UNPROCESSABLE_ENTITY+' Wrong password', index:'index'})
                 }     
@@ -77,8 +69,8 @@ module.exports.home = (req, res, next) => {
 //function to get user profile who have loggged in
 module.exports.profile = (req, res, next) => {
     try{
-        const resultUser = req.session.user;
-        res.render('userProfile',{userData:resultUser, uid:req.session.user.email, msg:req.flash('msg'), msg1:req.flash('msg1')})
+        const result = req.session.user;
+        res.render('userProfile',{userData:result, uid:result.email, msg:req.flash('msg'), msg1:req.flash('msg1')})
     } catch(err) {
         console.log(err);
     }
@@ -87,8 +79,8 @@ module.exports.profile = (req, res, next) => {
 //function for rendering on edit profile page with user data
 module.exports.editProfile = (req, res, next) => {
     try{
-        const resultUser = req.session.user;
-        res.render('updateProfile',{ data:resultUser, uid:req.session.user.email, msg1:req.flash('msg1')} )
+        const result = req.session.user;
+        res.render('updateProfile',{ data:result, uid:result.email, msg1:req.flash('msg1')} )
 
     } catch(err) {
         console.log(err);
@@ -99,9 +91,9 @@ module.exports.editProfile = (req, res, next) => {
 module.exports.updateProfile = async (req, res, next) => {
     try{
         const { name, email, mobile } = req.body;
-            const resultUser = await user.updateOne({ email:email },{ name:name, mobile:mobile });
-            console.log(resultUser);
-            if(resultUser.nModified != 0) {
+            const result = await user.findOneAndUpdate({email},{$set:{ name:name, mobile:mobile }}, { new:true });
+            if(result) {
+                req.session.user = result;
                 req.flash('msg','Profile Updated')
                 res.redirect('profile')
             } else {
@@ -122,13 +114,13 @@ module.exports.password = (req, res, next) => {
 module.exports.passwordAction = (req, res, next) => {
     try{
         const { oldpass, newpass } = req.body
-        const resultUser = req.session.user;
-            if(resultUser.validPassword(oldpass)) {
-                resultUser.setPassword(newpass)
-                resultUser.save()
-                res.render('resetPassword',{msg:'change password successfull', uid:req.session.user.email})
+        const result = req.session.user;
+            if(result.validPassword(oldpass)) {
+                result.setPassword(newpass)
+                result.save()
+                res.render('resetPassword',{msg:'change password successfull', uid:result.email})
             } else {
-                res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('resetPassword',{msg1:'password not matched', uid:req.session.user})
+                res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('resetPassword',{msg1:'password not matched', uid:result.email})
             }
     } catch(err) {
         console.log(err);
