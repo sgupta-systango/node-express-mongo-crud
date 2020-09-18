@@ -18,6 +18,10 @@ const Users = require('./routes/user.routes')
 //importing products routes
 const Products = require('./routes/product.routes')
 
+//importing index routes
+const indexRoutes = require('./routes/index.routes')
+
+
 //defining port
 const PORT = process.env.PORT || 3000;
 
@@ -70,7 +74,9 @@ app.use(function(request,response,next){
 })
 
 //configure routes
-app.use('/', Users)
+app.use('/', indexRoutes)
+app.use('/user', Users);
+app.use('/product', Products)
 
 //server configuration
 app.listen(PORT, () => {
