@@ -74,11 +74,15 @@ app.use(function(request,response,next){
 })
 
 //configure routes
-app.use('/', indexRoutes)
+app.use('/', indexRoutes);
 app.use('/user', Users);
-app.use('/product', Products)
+app.use('/product', Products);
+
+app.get('*', (req,res) => {
+    res.status(404).send('Page not found');
+})
 
 //server configuration
 app.listen(PORT, () => {
-    console.log(`Server started at http://localhost:${PORT}`)
+    console.log(`Server started at http://localhost:${PORT}`);
 })

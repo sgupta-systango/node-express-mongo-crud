@@ -7,9 +7,9 @@ module.exports.emailAndMobileCheck = async (req, res, next) => {
         const result = await users.findOne({$or:[{email:email},{mobile:mobile}]});
         if(result) {
             if(result.email === email) {
-                res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('signup',{ msg1:'email already exist' })
+                res.status(config.statusCode.CONFLICT).render('signup',{ msg1:'email'+config.message.CONFLICT })
             } else if(result.mobile === mobile) {
-                res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('signup',{ msg1:'mobile no. already exist' })
+                res.status(config.statusCode.CONFLICT).render('signup',{ msg1:'mobile no.'+config.message.CONFLICT})
             }
         } else {
         return next();
@@ -22,7 +22,7 @@ module.exports.emailAndMobileCheck = async (req, res, next) => {
 module.exports.mobileCheckForUpdate = async (req, res, next) => {
     try{
         const {mobile} = req.body;
-        const result = await users.findOne({email:{$ne:req.session.user.email},mobile});
+        const result = await users.findOne({ email:{ $ne:req.session.user.email }, mobile });
         if(!result) {
             return next();
         } else {

@@ -2,33 +2,24 @@ const express = require('express')
 const router = express.Router();
 const product = require('../controllers/product.controllers')
 const checkSession = require('../utility/auth')
+const validate = require('../utility/validate')
 
-// router.get('/userHome',(req,res)=>{
-//     res.redirect('/userHome')
-// })
-
-// router.get('/profile',(req,res)=>{
-//     res.redirect('/profile')
-// })
-
-// router.get('/resetPassword',(req,res)=>{
-//     res.redirect('/resetPassword')
-// })
-
-// router.get('/logout',(req,res)=>{
-//     res.redirect('/logout')
-// })
-
+//routes for add product form
 router.get('/add', checkSession, product.showForm)
 
-router.post('/addAction', checkSession, product.add)
+//routes for adding product
+router.post('/addAction', checkSession, validate.product, product.add)
 
+//routes to get product data
 router.get('/view', checkSession, product.get)
 
+//routes for edit product form
 router.get('/edit', checkSession, product.edit)
 
+//routes to update existing products
 router.post('/updateAction', checkSession, product.update)
 
+//routes for deleting product
 router.get('/delete', checkSession, product.delete)
 
 module.exports = router;

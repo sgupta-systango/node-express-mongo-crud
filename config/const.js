@@ -2,13 +2,13 @@
 module.exports = {
     message: {
     SUCCESS: 'Success',
-    CREATED: 'Created',
+    CREATED: 'Successfully Created',
     NO_CONTENT: 'No Content',
     FORBIDDEN: 'Forbidden',
-    NOT_FOUND: 'Not found',
+    NOT_FOUND: 'Not Found',
     NOT_ACCEPTABLE: 'Not Acceptable',
-    CONFLICT: 'Conflict',
-    UNPROCESSABLE_ENTITY: 'Unprocessable Entity',
+    CONFLICT: 'Already Exists',
+    UNPROCESSABLE_ENTITY: 'Invalid Credentials',
     INTERNAL_SERVER_ERROR: 'Internal Server Error'
     },
     statusCode: {

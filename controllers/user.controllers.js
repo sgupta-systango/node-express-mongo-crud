@@ -5,11 +5,6 @@ const flash = require('connect-flash')
 //importing user model
 const user = require('../models/user')
 
-//rendering to website home page
-module.exports.index = (req, res) => {
-    res.render('index',{ index:'index' })
-}
-
 //rendering to user signup page
 module.exports.signup = (req, res) => {
     res.render('signup',{ index:'index' })
@@ -107,14 +102,14 @@ module.exports.updateProfile = async (req, res, next) => {
 
 //rendering to change password page when session exist
 module.exports.password = (req, res, next) => {
-    res.render('resetPassword',{ uid:req.session.user })
+    res.render('resetPassword',{ uid:req.session.user.email })
 }
 
 //function to change user password using crypto
-module.exports.passwordAction = (req, res, next) => {
+module.exports.passwordAction = async (req, res, next) => {
     try{
-        const { oldpass, newpass } = req.body
-        const result = req.session.user;
+        const { oldpass, newpass } = req.body;
+        const result = await user.findOne({_id:req.session.user._id});
             if(result.validPassword(oldpass)) {
                 result.setPassword(newpass)
                 result.save()

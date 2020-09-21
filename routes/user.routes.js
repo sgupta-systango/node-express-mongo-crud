@@ -5,9 +5,6 @@ const validate = require('../utility/validate')
 const checkSession = require('../utility/auth')
 const userMiddleware = require('../utility/user.middleware')
 
-//route for user index
-router.get('/', user.index)
-
 //route for user signup
 router.get('/signup', user.signup)
 

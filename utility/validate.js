@@ -3,7 +3,7 @@ const config = require('../config/const');
 const { ValidationError } = require('joi');
 
 //function to validate user signup form using joi
-module.exports.signup = async (req,res,next) => {
+module.exports.signup = async (req, res, next) => {
     const validate = joi.object({
         name:joi.string().min(3).max(30).required(),
         email:joi.string().email().min(5).max(30).required(),
@@ -20,7 +20,7 @@ module.exports.signup = async (req,res,next) => {
 }
 
 //function to validate user login form using joi
-module.exports.login = async (req,res,next) => {
+module.exports.login = async (req, res, next) => {
     const validate = joi.object({
         email:joi.string().email().min(5).max(50).required(),
         password:joi.string().min(3).max(30).required()
@@ -28,6 +28,19 @@ module.exports.login = async (req,res,next) => {
     const result = await validate.validateAsync(req.body);
     if(result.error) {
         res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('login', { msg1:result.error.detail })
+    } else {
+    return next();
+    }
+}
+
+//function to validate user login form using joi
+module.exports.product = async (req, res, next) => {
+    const validate = joi.object({
+        name:joi.string().min(3).max(50).required()
+    })
+    const result = await validate.validateAsync(req.body);
+    if(result.error) {
+        res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('addProduct', { msg1:result.error.detail, uid:req.session.user.email })
     } else {
     return next();
     }
