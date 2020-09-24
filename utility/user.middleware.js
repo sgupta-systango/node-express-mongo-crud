@@ -22,7 +22,7 @@ module.exports.emailAndMobileCheck = async (req, res, next) => {
 module.exports.mobileCheckForUpdate = async (req, res, next) => {
     try{
         const {mobile} = req.body;
-        const result = await users.findOne({ email:{ $ne:req.session.user.email }, mobile });
+        const result = await users.findOne({ email:{ $ne:req.session.user._doc.email }, mobile });
         if(!result) {
             return next();
         } else {
@@ -33,3 +33,4 @@ module.exports.mobileCheckForUpdate = async (req, res, next) => {
         console.log(err);
     } 
 }
+

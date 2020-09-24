@@ -6,8 +6,9 @@ const userSchema=mongoose.Schema({
     name:{ type:String, require:true},
     email:{ type:String, unique:true, require:true},
     mobile:{ type:String, unique:true, require:true},
-        hash : String, 
-        salt : String 
+    role:String,
+    hash : String, 
+    salt : String 
 })
 
 //Method to set salt and hash the password for a user 

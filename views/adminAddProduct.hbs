@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>upload</title>
 </head>
 {{#if msg}}
     <div class="alert alert-success alert-dismissible fade show">
@@ -18,17 +18,20 @@
     </div>
 {{/if}}
 <body>
-    <form action="loginAction" method="post">
+    <form action="dummyAddAction" method="post" enctype="multipart/form-data" >
         <div class="form-group">
-            <label for="email">Email address:</label>
-            <input type="email" class="form-control" placeholder="Enter email" name="email" required>
+            <label for="name">Product Name:</label>
+            <input type="name" class="form-control" placeholder="Enter product name" name="name" required>
         </div>
         <div class="form-group">
-            <label for="pwd">Password:</label>
-            <input type="password" class="form-control" placeholder="Enter password" name="password" required>
+            <label for="price">Product Price:</label>
+            <input type="number" class="form-control" placeholder="Enter product price" name="price" required>
+        </div>
+        <div class="form-group">
+            <label for="image">Product Image</label>
+            <input type="file" class="form-control"  name="image" required>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-
 </body>
 </html>

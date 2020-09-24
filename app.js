@@ -21,6 +21,11 @@ const Products = require('./routes/product.routes')
 //importing index routes
 const indexRoutes = require('./routes/index.routes')
 
+//importing allProducts routes
+const allProducts = require('./routes/allProduct.routes')
+
+//importing cart routes
+const Carts = require('./routes/cart.routes')
 
 //defining port
 const PORT = process.env.PORT || 3000;
@@ -77,6 +82,8 @@ app.use(function(request,response,next){
 app.use('/', indexRoutes);
 app.use('/user', Users);
 app.use('/product', Products);
+app.use('/allProduct', allProducts);
+app.use('/cart', Carts);
 
 app.get('*', (req,res) => {
     res.status(404).send('Page not found');

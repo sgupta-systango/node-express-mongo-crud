@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router();
 const user = require('../controllers/user.controllers')
 const validate = require('../utility/validate')
-const checkSession = require('../utility/auth')
+const auth = require('../utility/auth')
 const userMiddleware = require('../utility/user.middleware')
 
 //route for user signup
@@ -18,22 +18,22 @@ router.post('/signupAction', validate.signup, userMiddleware.emailAndMobileCheck
 router.post('/loginAction', validate.login, user.loginAction)
 
 //route for user home
-router.get('/userHome', checkSession, user.home)
+router.get('/userHome', auth.checkSession, user.home)
 
 //route for user profile
-router.get('/profile', checkSession, user.profile)
+router.get('/profile', auth.checkSession, user.profile)
 
 //route for user password
-router.get('/resetPassword', checkSession, user.password)
+router.get('/resetPassword', auth.checkSession, user.password)
 
 //route for user passwordAction
-router.post('/resetPasswordAction', checkSession, user.passwordAction)
+router.post('/resetPasswordAction', auth.checkSession, user.passwordAction)
 
 //route for user editProfile
-router.get('/editUserProfile', checkSession,  user.editProfile)
+router.get('/editUserProfile', auth.checkSession,  user.editProfile)
 
 //route for user updateProfile
-router.post('/updateProfileAction', checkSession, userMiddleware.mobileCheckForUpdate, user.updateProfile)
+router.post('/updateProfileAction', auth.checkSession, userMiddleware.mobileCheckForUpdate, user.updateProfile)
 
 //route for user logout
 router.get('/logout', user.logout)

@@ -13,7 +13,7 @@ module.exports.signup = async (req, res, next) => {
     })
     const result = await validate.validateAsync(req.body);
     if(result.error) {
-        res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('signup', { msg1:result.error.detail })
+        res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('signup', { msg1:result.error.detail, index:'index' })
     } else {
     return next();
     }
@@ -27,7 +27,7 @@ module.exports.login = async (req, res, next) => {
     })
     const result = await validate.validateAsync(req.body);
     if(result.error) {
-        res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('login', { msg1:result.error.detail })
+        res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('login', { msg1:result.error.detail, index:'index'})
     } else {
     return next();
     }
@@ -40,7 +40,21 @@ module.exports.product = async (req, res, next) => {
     })
     const result = await validate.validateAsync(req.body);
     if(result.error) {
-        res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('addProduct', { msg1:result.error.detail, uid:req.session.user.email })
+        res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('addProduct', { msg1:result.error.detail, uid:req.session.user._doc.email, isAdmin:req.session.user.isAdmin })
+    } else {
+    return next();
+    }
+}
+
+//function to validate user login form using joi
+module.exports.allProduct = async (req, res, next) => {
+    const validate = joi.object({
+        name:joi.string().min(3).max(50).required(),
+        price:joi.number().required()
+    })
+    const result = await validate.validateAsync(req.body);
+    if(result.error) {
+        res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('adminAddProduct', { msg1:result.error.detail, uid:req.session.user._doc.email, isAdmin:req.session.user.isAdmin })
     } else {
     return next();
     }

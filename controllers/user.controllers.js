@@ -17,7 +17,8 @@ module.exports.signupAction = (req, res, next) => {
         const newUser = new user({
         name : name,
         email : email,
-        mobile : mobile
+        mobile : mobile,
+        role:'user'
         });
         newUser.setPassword(password);
         newUser.save((err) => {
@@ -43,8 +44,11 @@ module.exports.loginAction =  async (req, res, next) => {
         const result = await user.findOne({email:email});
             if(result) {
                 if (result.validPassword(password)) { 
-                    req.session.user = result;
-                    res.render('userHome',{uid:result.email}) 
+                    const isAdmin = result.role === 'user'? false:true;
+                    const pair = {isAdmin:isAdmin}
+                    const objs = {...result,...pair}
+                    req.session.user = objs;
+                    res.render('userHome',{uid:result.email, isAdmin:isAdmin}) 
                 } else { 
                     res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('login',{msg1:config.message.UNPROCESSABLE_ENTITY+' Wrong password', index:'index'})
                 }     
@@ -58,14 +62,15 @@ module.exports.loginAction =  async (req, res, next) => {
 
 //rendering to user home page after successful login
 module.exports.home = (req, res, next) => {
-    res.render('userHome',{ uid:req.session.user.email })
+    const result = req.session.user;
+    res.render('userHome',{ uid:result._doc.email, isAdmin:result.isAdmin })
 }
 
 //function to get user profile who have loggged in
 module.exports.profile = (req, res, next) => {
     try{
         const result = req.session.user;
-        res.render('userProfile',{userData:result, uid:result.email, msg:req.flash('msg'), msg1:req.flash('msg1')})
+        res.render('userProfile',{userData:result._doc, uid:result._doc.email, isAdmin:result.isAdmin, msg:req.flash('msg'), msg1:req.flash('msg1')}) 
     } catch(err) {
         console.log(err);
     }
@@ -75,8 +80,7 @@ module.exports.profile = (req, res, next) => {
 module.exports.editProfile = (req, res, next) => {
     try{
         const result = req.session.user;
-        res.render('updateProfile',{ data:result, uid:result.email, msg1:req.flash('msg1')} )
-
+        res.render('updateProfile',{ data:result._doc, uid:result._doc.email, isAdmin:result.isAdmin, msg1:req.flash('msg1')} )
     } catch(err) {
         console.log(err);
     }
@@ -88,7 +92,11 @@ module.exports.updateProfile = async (req, res, next) => {
         const { name, email, mobile } = req.body;
             const result = await user.findOneAndUpdate({email},{$set:{ name:name, mobile:mobile }}, { new:true });
             if(result) {
-                req.session.user = result;
+                const isAdmin = result.role === 'user'? false:true;
+                const pair = {isAdmin:isAdmin}
+                const objs = {...result,...pair}
+                req.session.user = objs;
+                req.session.user = objs;
                 req.flash('msg','Profile Updated')
                 res.redirect('profile')
             } else {
@@ -102,20 +110,21 @@ module.exports.updateProfile = async (req, res, next) => {
 
 //rendering to change password page when session exist
 module.exports.password = (req, res, next) => {
-    res.render('resetPassword',{ uid:req.session.user.email })
+    const result = req.session.user;
+    res.render('resetPassword',{ uid:result._doc.email, isAdmin:result.isAdmin })
 }
 
 //function to change user password using crypto
 module.exports.passwordAction = async (req, res, next) => {
     try{
         const { oldpass, newpass } = req.body;
-        const result = await user.findOne({_id:req.session.user._id});
+        const result = await user.findOne({_id:req.session.user._doc._id});
             if(result.validPassword(oldpass)) {
                 result.setPassword(newpass)
                 result.save()
-                res.render('resetPassword',{msg:'change password successfull', uid:result.email})
+                res.render('resetPassword',{msg:'change password successfull', uid:result.email, isAdmin:req.session.user.isAdmin })
             } else {
-                res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('resetPassword',{msg1:'password not matched', uid:result.email})
+                res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('resetPassword',{msg1:'password not matched', uid:result.email, isAdmin:req.session.user.isAdmin })
             }
     } catch(err) {
         console.log(err);

@@ -1,25 +1,25 @@
 const express = require('express')
 const router = express.Router();
 const product = require('../controllers/product.controllers')
-const checkSession = require('../utility/auth')
+const auth = require('../utility/auth')
 const validate = require('../utility/validate')
 
 //routes for add product form
-router.get('/add', checkSession, product.showForm)
+router.get('/add', auth.checkSession, auth.userCheck, product.showForm)
 
 //routes for adding product
-router.post('/addAction', checkSession, validate.product, product.add)
+router.post('/addAction', auth.checkSession, auth.userCheck, validate.product, product.add)
 
 //routes to get product data
-router.get('/view', checkSession, product.get)
+router.get('/view', auth.checkSession, auth.userCheck, product.get)
 
 //routes for edit product form
-router.get('/edit', checkSession, product.edit)
+router.get('/edit', auth.checkSession, auth.userCheck, product.edit)
 
 //routes to update existing products
-router.post('/updateAction', checkSession, product.update)
+router.post('/updateAction', auth.checkSession, auth.userCheck, product.update)
 
 //routes for deleting product
-router.get('/delete', checkSession, product.delete)
+router.get('/delete', auth.checkSession, auth.userCheck, product.delete)
 
 module.exports = router;

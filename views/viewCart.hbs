@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color:cadetblue ;
+        }
+    </style>
+</head>
+{{#if msg}}
+            <div class="alert alert-success alert-dismissible fade show">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>{{msg}}</strong>
+            </div>
+{{/if}}
+{{#if msg1}}
+    <div class="alert alert-danger alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>{{msg1}}</strong>
+    </div>
+{{/if}}
+<body>
+    <div class="col-md-7 mx-auto">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-white">Your cart</span>
+            <span class="badge badge-danger badge-pill">{{cart.length}}</span>
+        </h4> 
+        <div class="d-flex justify-content-between align-items-center mb-3 bg-white">    
+            <table class="table table-responsive">
+                <tr>
+                    <th>Product Image</th>
+                    <th>Product Name</th>
+                    <th>Product Price</th>
+                    <th>Product Quantity</th>
+                </tr>
+                {{#each cart}}
+                    {{#each data}}
+                <tr>
+                    <td><img src="/{{this.image}}" width="50" height="50"></td>
+                    <td>{{this.name}}</td>
+                    <td>{{this.price}}</td>
+                    {{/each}}
+                    <td>{{this.quantity}}</td>
+                    <td><a href="/cart/deleteCartItem?id={{this._id}}" onclick="return confirm('Do you really want ot delete?')">
+                        <i class="fas fa-trash-alt"></i></a></td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+{{#if msg}}
+            <div class="alert alert-success alert-dismissible fade show">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>{{msg}}</strong>
+            </div>
+{{/if}}
+{{#if msg1}}
+    <div class="alert alert-danger alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>{{msg1}}</strong>
+    </div>
+{{/if}}
+<body>
+    <div class="row">
+        {{#each data}}
+        <div class="col-md-4">
+        <figure class="card card-product">
+            <div class="img-wrap mt-2 ml-2"><img src="/{{this.image}}" width="200" height="150"></div>
+            <figcaption class="info-wrap">
+                <a href="#?id={{this._id}}">
+                    <h5 class="title ml-1">{{this.name}}</h5>
+                </a>
+            </figcaption>
+            <div class="price-wrap h5">
+                <span class="ml-1">₹{{this.price}}</span>
+            </div>
+            <div class="bottom-wrap">
+                <form action="/cart/addCartAction" method="POST">
+                    <span class="text-muted">Quantity:</span>
+                    <input type="number" name="quantity" min="1" max="20" value="1">
+                    <input type="text" hidden name="id" value="{{this._id}}">
+                    <input type="submit" value="Add to cart" class=" btn btn-sm btn-primary float-right mr-2">
+                </form>
+                <br>
+            </div> <!-- bottom-wrap.// -->
+        </figure>
+        </div> <!-- col // -->
+        {{/each}}
+        </div> <!-- row.// -->
+</body>
+</html>
