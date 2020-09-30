@@ -29,19 +29,36 @@ module.exports.get = async(req, res, next) => {
                     from: 'allproducts',
                     localField: 'productId',
                     foreignField: '_id',
-                    as: 'data'
+                    as: 'product'
                 }
             },
             {
                 $match: {
                     userId: mongoose.Types.ObjectId(req.session.user._doc._id)
                 }
+            },
+            {
+                $unwind: '$product',
+
             }
         ]);
+        const fprice = result.map((rec) => {
+            return rec.product.price * rec.quantity;
+        })
+
+        const finaldata = result.map((rec, index) => {
+            var pair = { fprice: fprice[index] };
+            var objs = {...rec, ...pair }
+            return objs;
+        })
+
+        const grandTotal = fprice.reduce((total, num) => {
+            return total + num
+        }, 0)
         if (result.length !== 0) {
-            res.render('viewCart', { cart: result, msg: req.flash('msg'), msg1: req.flash('msg1'), uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin })
+            res.render('viewCart', { cart: finaldata, gTotal: grandTotal, msg: req.flash('msg'), msg1: req.flash('msg1'), uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin })
         } else {
-            res.status(config.statusCode.NOT_FOUND).render('viewCart', { msg: 'cart is empty', uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin })
+            res.status(config.statusCode.NOT_FOUND).render('viewCart', { msg: 'cart is empty', gTotal: grandTotal, uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin })
         }
     } catch (err) {
         res.json({ error: err.toString() })

@@ -35,19 +35,20 @@
                     <th>Product Name</th>
                     <th>Product Price</th>
                     <th>Product Quantity</th>
+                    <th>Total</th>
                 </tr>
                 {{#each cart}}
-                    {{#each data}}
                 <tr>
-                    <td><img src="/{{this.image}}" width="50" height="50"></td>
-                    <td>{{this.name}}</td>
-                    <td>{{this.price}}</td>
-                    {{/each}}
+                    <td><img src="/{{this.product.image}}" width="50" height="50"></td>
+                    <td>{{this.product.name}}</td>
+                    <td>{{this.product.price}}</td>
                     <td>{{this.quantity}}</td>
+                    <td>{{this.fprice}}</td>
                     <td><a href="/cart/deleteCartItem?id={{this._id}}" onclick="return confirm('Do you really want ot delete?')">
                         <i class="fas fa-trash-alt"></i></a></td>
                 </tr>
                 {{/each}}
+                <tr><td><h2>GT:</h2></td><td><h2>{{gTotal}}</h2></td></tr>
             </table>
         </div>
     </div>
