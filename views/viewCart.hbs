@@ -9,17 +9,24 @@
             background-color:cadetblue ;
         }
     </style>
+    {{!-- <script src="../utility/client.js"></script> --}}
 </head>
 {{#if msg}}
-            <div class="alert alert-success alert-dismissible fade show">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>{{msg}}</strong>
-            </div>
+    <div class="alert alert-success alert-dismissible fade show">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>{{msg}}</strong>
+    </div>
 {{/if}}
 {{#if msg1}}
     <div class="alert alert-danger alert-dismissible fade show">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>{{msg1}}</strong>
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>{{msg1}}</strong>
+    </div>
+{{/if}}
+{{#if msg2}}
+    <div class="alert alert-success alert-dismissible fade show">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>{{msg2}}</strong>
     </div>
 {{/if}}
 <body>
@@ -52,5 +59,28 @@
             </table>
         </div>
     </div>
+    {{#if cart}}
+    {{!-- <center>
+        <a href="/order/checkoutAction">
+        <button class="btn btn-primary">Order Now</button></a>
+    </center> --}}
+    <div class="container">
+        <center>
+            <form action="/order/pay" method="post">
+                <script src="https://checkout.stripe.com/checkout.js"
+                class="stripe-button"
+                data-key="pk_test_KdtbpKVbrWhdHy14wpbZRbVK004VhiMawz"
+                data-name="Product Order"
+                data-description="Product Order System"
+                data-locale="auto"
+                data-currency="inr",
+                data-amount="{{gTotal}}"
+                >
+                </script>
+                <input type="text" hidden name="amount" value="{{gTotal}}">
+            </form>
+        </center>
+    </div>
+    {{/if}}
 </body>
 </html>

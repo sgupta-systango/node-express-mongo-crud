@@ -58,7 +58,7 @@ module.exports.get = async(req, res, next) => {
         if (result.length !== 0) {
             res.render('viewCart', { cart: finaldata, gTotal: grandTotal, msg: req.flash('msg'), msg1: req.flash('msg1'), uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin })
         } else {
-            res.status(config.statusCode.NOT_FOUND).render('viewCart', { msg: 'cart is empty', gTotal: grandTotal, uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin })
+            res.status(config.statusCode.NOT_FOUND).render('viewCart', { msg: 'cart is empty', msg2: req.flash('msg2'), gTotal: grandTotal, uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin })
         }
     } catch (err) {
         res.json({ error: err.toString() })
