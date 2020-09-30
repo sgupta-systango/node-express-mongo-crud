@@ -20,7 +20,7 @@ router.get('/dummyUserView', auth.checkSession, auth.userCheck, allProduct.allGe
 router.get('/dummyEdit', auth.checkSession, auth.adminCheck, allProduct.edit)
 
 //routes to update existing products
-router.post('/dummyUpdateAction', auth.checkSession, auth.adminCheck, allProduct.update)
+router.post('/dummyUpdateAction', auth.checkSession, auth.adminCheck, validate.update, allProduct.update)
 
 //routes for deleting product
 router.get('/dummyDelete', auth.checkSession, auth.adminCheck, allProduct.delete)

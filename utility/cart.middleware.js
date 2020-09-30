@@ -19,6 +19,6 @@ module.exports.productCheckInCart = async(req, res, next) => {
             return next();
         }
     } catch (err) {
-        console.log(err);
+        res.json({ error: err.toString() })
     }
 }

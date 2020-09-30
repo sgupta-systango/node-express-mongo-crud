@@ -21,14 +21,11 @@ module.exports.signupAction = (req, res, next) => {
             role: 'user'
         });
         newUser.setPassword(password);
-        newUser.save((err) => {
-            if (err) throw err;
-            else {
-                res.status(config.statusCode.CREATED).render('login', { msg: 'registration successful', index: 'index' })
-            }
+        newUser.save().then((data) => {
+            res.status(config.statusCode.CREATED).render('login', { msg: 'registration successful', index: 'index' })
         })
     } catch (err) {
-        console.log(err);
+        res.json({ error: err.toString() })
     }
 }
 
@@ -56,14 +53,18 @@ module.exports.loginAction = async(req, res, next) => {
             res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('login', { msg1: ' User not exist', index: 'index' })
         }
     } catch (err) {
-        console.log(err);
+        res.json({ error: err.toString() })
     }
 }
 
 //rendering to user home page after successful login
 module.exports.home = (req, res, next) => {
-    const result = req.session.user;
-    res.render('userHome', { uid: result._doc.email, isAdmin: result.isAdmin })
+    try {
+        const result = req.session.user;
+        res.render('userHome', { uid: result._doc.email, isAdmin: result.isAdmin })
+    } catch (err) {
+        res.json({ error: err.toString() })
+    }
 }
 
 //function to get user profile who have loggged in
@@ -72,7 +73,7 @@ module.exports.profile = (req, res, next) => {
         const result = req.session.user;
         res.render('userProfile', { userData: result._doc, uid: result._doc.email, isAdmin: result.isAdmin, msg: req.flash('msg'), msg1: req.flash('msg1') })
     } catch (err) {
-        console.log(err);
+        res.json({ error: err.toString() })
     }
 }
 
@@ -82,7 +83,7 @@ module.exports.editProfile = (req, res, next) => {
         const result = req.session.user;
         res.render('updateProfile', { data: result._doc, uid: result._doc.email, isAdmin: result.isAdmin, msg1: req.flash('msg1') })
     } catch (err) {
-        console.log(err);
+        res.json({ error: err.toString() })
     }
 }
 
@@ -96,7 +97,6 @@ module.exports.updateProfile = async(req, res, next) => {
             const pair = { isAdmin: isAdmin }
             const objs = {...result, ...pair }
             req.session.user = objs;
-            req.session.user = objs;
             req.flash('msg', 'Profile Updated')
             res.redirect('profile')
         } else {
@@ -104,14 +104,18 @@ module.exports.updateProfile = async(req, res, next) => {
             res.redirect('profile')
         }
     } catch (err) {
-        console.log(err);
+        res.json({ error: err.toString() })
     }
 }
 
 //rendering to change password page when session exist
 module.exports.password = (req, res, next) => {
-    const result = req.session.user;
-    res.render('resetPassword', { uid: result._doc.email, isAdmin: result.isAdmin })
+    try {
+        const result = req.session.user;
+        res.render('resetPassword', { uid: result._doc.email, isAdmin: result.isAdmin })
+    } catch (err) {
+        res.json({ error: err.toString() })
+    }
 }
 
 //function to change user password using crypto
@@ -127,11 +131,11 @@ module.exports.passwordAction = async(req, res, next) => {
             res.status(config.statusCode.UNPROCESSABLE_ENTITY).render('resetPassword', { msg1: 'password not matched', uid: result.email, isAdmin: req.session.user.isAdmin })
         }
     } catch (err) {
-        console.log(err);
+        res.json({ error: err.toString() })
     }
 }
 
-//function for logout user and destroy there session
+//function for logout user and destroy there session data
 module.exports.logout = (req, res, next) => {
     req.session.destroy();
     res.render('login', { msg: 'Logout Successfull', index: 'index' })

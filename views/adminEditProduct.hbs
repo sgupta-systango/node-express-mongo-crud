@@ -19,14 +19,14 @@
 {{/if}}
 <body>
     <form action="dummyUpdateAction" method="post" enctype="multipart/form-data" >
-        <input type="hidden" value="{{data._id}}" name="id">
+        <input type="text" hidden value="{{data._id}}" name="id">
         <div class="form-group">
             <label for="name">Product Name:</label>
             <input type="name" class="form-control" value="{{data.name}}" name="name" required>
         </div>
         <div class="form-group">
             <label for="price">Product Price:</label>
-            <input type="number" class="form-control" value="{{data.price}}" name="price" required>
+            <input type="number" class="form-control" value="{{data.price}}" min="1" name="price" required>
         </div>
         <div class="form-group">
             <label for="image">Product Image</label>

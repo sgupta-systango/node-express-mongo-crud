@@ -27,13 +27,13 @@ router.get('/profile', auth.checkSession, user.profile)
 router.get('/resetPassword', auth.checkSession, user.password)
 
 //route for user passwordAction
-router.post('/resetPasswordAction', auth.checkSession, user.passwordAction)
+router.post('/resetPasswordAction', auth.checkSession, validate.resetPassword, user.passwordAction)
 
 //route for user editProfile
-router.get('/editUserProfile', auth.checkSession,  user.editProfile)
+router.get('/editUserProfile', auth.checkSession, user.editProfile)
 
 //route for user updateProfile
-router.post('/updateProfileAction', auth.checkSession, userMiddleware.mobileCheckForUpdate, user.updateProfile)
+router.post('/updateProfileAction', auth.checkSession, validate.updateProfile, userMiddleware.mobileCheckForUpdate, user.updateProfile)
 
 //route for user logout
 router.get('/logout', user.logout)
