@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router();
 const auth = require('../utility/auth')
 const order = require('../controllers/order.controllers');
+const validate = require('../utility/validate')
 
 //routes for order details
 router.get('/details', auth.checkSession, auth.userCheck, order.details)
@@ -10,7 +11,7 @@ router.get('/details', auth.checkSession, auth.userCheck, order.details)
 router.get('/checkout', auth.checkSession, auth.userCheck, order.checkout)
 
 //route for payment
-router.post('/pay', auth.checkSession, auth.userCheck, order.pay);
+router.post('/pay', auth.checkSession, auth.userCheck, validate.checkoutForm, order.pay);
 
 //routes for Payment details
 router.get('/payment', auth.checkSession, auth.userCheck, order.payment)

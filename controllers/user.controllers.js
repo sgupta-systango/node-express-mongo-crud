@@ -1,4 +1,4 @@
-const { response } = require("express")
+const { response, request } = require("express")
 const config = require('../config/const')
 const flash = require('connect-flash')
 
@@ -82,6 +82,26 @@ module.exports.editProfile = (req, res, next) => {
     try {
         const result = req.session.user;
         res.render('updateProfile', { data: result._doc, uid: result._doc.email, isAdmin: result.isAdmin, msg1: req.flash('msg1') })
+    } catch (err) {
+        res.json({ error: err.toString() })
+    }
+}
+
+//function to render on  add user details page
+module.exports.addDetails = (req, res) => {
+    const result = req.session.user;
+    res.render('addDetails', { uid: result._doc.email, isAdmin: result.isAdmin })
+}
+
+module.exports.addDetailAction = async(req, res) => {
+    try {
+        const { address, country, state, district, zip } = req.body;
+        const result = await user.findByIdAndUpdate(req.session.user._doc._id, { $set: { address, country, state, district, zip } });
+        if (result) {
+            res.render('addDetails', { uid: result.email, isAdmin: req.session.user.isAdmin, msg: 'Details updated' })
+        } else {
+            res.render('addDetails', { uid: result.email, isAdmin: req.session.user.isAdmin, msg1: 'Details not updated' })
+        }
     } catch (err) {
         res.json({ error: err.toString() })
     }

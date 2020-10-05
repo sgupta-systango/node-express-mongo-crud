@@ -60,27 +60,9 @@
         </div>
     </div>
     {{#if cart}}
-    {{!-- <center>
+    <center>
         <a href="/order/checkout?gtotal={{gTotal}}"><button class="btn btn-success">Buy now</button></a>
-    </center> --}}
-    
-    <div class="container">
-        <center>
-            <form action="/order/pay" method="post">
-                <script src="https://checkout.stripe.com/checkout.js"
-                class="stripe-button"
-                data-key="pk_test_KdtbpKVbrWhdHy14wpbZRbVK004VhiMawz"
-                data-name="Product Order"
-                data-description="Product Order System"
-                data-locale="auto"
-                data-currency="inr",
-                data-amount="{{gTotal}}"
-                >
-                </script>
-                <input type="text" hidden name="amount" value="{{gTotal}}">
-            </form>
-        </center>
-    </div>
+    </center>
     {{/if}}
 </body>
 </html>

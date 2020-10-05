@@ -11,7 +11,8 @@ const orderSchema = mongoose.Schema({
     quantity: { type: String, required: true },
     amount: { type: String, required: true },
     refString: { type: String, required: true, unique: true },
-    orderDate: { type: String }
+    orderDate: { type: String },
+    shipping: {}
 })
 
 module.exports = mongoose.model('order', orderSchema)

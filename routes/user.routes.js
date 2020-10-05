@@ -23,6 +23,11 @@ router.get('/userHome', auth.checkSession, user.home)
 //route for user profile
 router.get('/profile', auth.checkSession, user.profile)
 
+//routes for add user details
+router.get('/addDetails', auth.checkSession, user.addDetails)
+
+router.post('/addDetailAction', auth.checkSession, user.addDetailAction)
+
 //route for user password
 router.get('/resetPassword', auth.checkSession, user.password)
 

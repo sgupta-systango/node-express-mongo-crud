@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        var stateObject = {
+            "India": { "Delhi": ["new Delhi", "North Delhi"],
+            "Kerala": ["Thiruvananthapuram", "Palakkad"],
+            "Goa": ["North Goa", "South Goa"],
+            "Madhya-Pradesh":["Indore","Bhopal","Dewas","Ujjan"]
+            },
+            "Australia": {
+            "South Australia": ["Dunstan", "Mitchell"],
+            "Victoria": ["Altona", "Euroa"]
+            }, "Canada": {
+            "Alberta": ["Acadia", "Bighorn"],
+            "Columbia": ["Washington", ""]
+            },
+            }
+            window.onload = function () {
+            var countySel = document.getElementById("countySel"),
+            stateSel = document.getElementById("stateSel"),
+            districtSel = document.getElementById("districtSel");
+            for (var country in stateObject) {
+                countySel.options[countySel.options.length] = new Option(country, country);
+            }
+            countySel.onchange = function () {
+            stateSel.length = 1; // remove all options bar first
+            districtSel.length = 1; // remove all options bar first
+            if (this.selectedIndex < 1) return; // done
+            for (var state in stateObject[this.value]) {
+                stateSel.options[stateSel.options.length] = new Option(state, state);
+            }
+            }
+            countySel.onchange(); // reset in case page is reloaded
+            stateSel.onchange = function () {
+            districtSel.length = 1; // remove all options bar first
+            if (this.selectedIndex < 1) return; // done
+            var district = stateObject[countySel.value][this.value];
+            for (var i = 0; i < district.length; i++) {
+                districtSel.options[districtSel.options.length] = new Option(district[i], district[i]);
+            }
+            }
+        }
+    </script>
+</head>
+{{#if msg}}
+    <div class="alert alert-success alert-dismissible fade show">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>{{msg}}</strong>
+    </div>
+{{/if}}
+{{#if msg1}}
+    <div class="alert alert-danger alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>{{msg1}}</strong>
+    </div>
+{{/if}}
+<body>
+    <form action="addDetailAction" method="post">
+        <div class="form-group">
+            <label for="name">Address:</label>
+            <input type="text" class="form-control" placeholder="Enter your address" name="address" required>
+        </div>
+        <div class="form-group">
+            <label for="Country">Country:</label>
+            <select name="country" id="countySel" size="1" class="form-control">
+                <option value="" selected="selected">Select Country</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="State">State:</label>
+            <select name="state" id="stateSel" size="1" class="form-control">
+                <option value="" selected="selected">Please select Country first</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="District">District:</label>
+            <select name="district" id="districtSel" size="1" class="form-control">
+                <option value="" selected="selected">Please select State first</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="Zip">Zip:</label>
+            <input type="text" class="form-control" placeholder="Enter Zip Code" name="zip" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</body>
+</html>

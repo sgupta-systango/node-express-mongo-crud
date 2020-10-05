@@ -107,3 +107,24 @@ module.exports.update = async(req, res, next) => {
         res.redirect('/allProduct/dummyEdit')
     }
 }
+
+//function to validate user checkout form
+module.exports.checkoutForm = async(req, res, next) => {
+    try {
+        const validate = joi.object({
+            name: joi.string().min(3).max(30).trim().required(),
+            email: joi.string().email().min(5).max(30).trim().required(),
+            mobile: joi.string().pattern(new RegExp('^[6-9][0-9]{9}$')).required(),
+            address: joi.string().min(3).max(100).trim().required(),
+            country: joi.string().min(3).max(30).trim().required(),
+            state: joi.string().min(3).max(30).trim().required(),
+            district: joi.string().min(3).max(30).trim().required(),
+            zip: joi.string().min(3).max(30).trim().required(),
+        })
+        await validate.validateAsync(req.body);
+        return next();
+    } catch (err) {
+        req.flash('msg1', err.details[0].message)
+        res.redirect('/order/checkout')
+    }
+}

@@ -2,28 +2,42 @@ const mongoose = require('mongoose')
 const Str = require('@supercharge/strings')
 const config = require('../config/const')
 const stripe = require('stripe')('sk_test_GrF1OPlJ39fDLRmLLyFYaWIM00gGq6a8Tj')
+const users = require('../models/user')
 const carts = require('../models/cart')
 const orders = require('../models/order')
 const payments = require('../models/payment')
 
-module.exports.checkout = (req, res) => {
+module.exports.checkout = async(req, res) => {
     const { gtotal } = req.query;
-    res.render('checkout', { gtotal: gtotal, uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin })
+    const result = await users.findById(req.session.user._doc._id);
+    res.render('checkout', { user: result, gtotal: gtotal, uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin, msg1: req.flash('msg1') })
 }
 
 //function to initiate payment
 module.exports.pay = (req, res) => {
     try {
         const token = req.body.stripeToken;
-        const chargeamt = req.body.amount;
-        console.log(chargeamt);
+        const { name, email, mobile, address, country, state, district, zip, amount } = req.body;
+        console.log(amount);
         stripe.charges.create({
-            amount: chargeamt,
+            amount: amount,
             currency: "inr",
-            source: token
+            source: token,
+            shipping: {
+                address: {
+                    country: country,
+                    state: state,
+                    city: district,
+                    line1: address,
+                    postal_code: zip
+                },
+                name: name,
+                phone: mobile,
+            }
         }, async(err, charge) => {
             console.log(charge)
             if (err) {
+                console.log(err);
                 console.log("Card Decliend");
                 req.flash('msg1', 'Card Decliend');
                 res.redirect('/cart/viewCart')
@@ -76,7 +90,8 @@ module.exports.pay = (req, res) => {
                         quantity: data.quantity,
                         amount: data.fprice,
                         refString: Str.random(8),
-                        orderDate: new Date().toDateString()
+                        orderDate: new Date().toDateString(),
+                        shipping: charge.shipping
                     })
                     newOrder.save()
                 })
@@ -113,7 +128,6 @@ module.exports.details = async(req, res) => {
             },
             {
                 $unwind: '$product',
-
             }
         ]);
         if (result.length !== 0) {
