@@ -5,7 +5,7 @@ const user = require('./user')
 
 // order model
 const orderSchema = mongoose.Schema({
-    orderId: { type: String, required: true },
+    orderId: { type: mongoose.Types.ObjectId, required: true },
     userId: { type: mongoose.Types.ObjectId, ref: user },
     productId: { type: mongoose.Types.ObjectId, ref: allProduct },
     quantity: { type: String, required: true },

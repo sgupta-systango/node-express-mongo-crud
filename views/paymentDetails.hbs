@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color:cadetblue ;
+        }
+    </style>
+</head>
+{{#if msg}}
+    <div class="alert alert-success alert-dismissible fade show">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>{{msg}}</strong>
+    </div>
+{{/if}}
+{{#if msg1}}
+    <div class="alert alert-danger alert-dismissible fade show">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>{{msg1}}</strong>
+    </div>
+{{/if}}
+{{#if msg2}}
+    <div class="alert alert-success alert-dismissible fade show">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>{{msg2}}</strong>
+    </div>
+{{/if}}
+<body>
+    <div class="col-md-12 mx-auto">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-white">Payment Details</span>
+            <span class="badge badge-danger badge-pill">{{order.length}}</span>
+        </h4> 
+        <div class="d-flex justify-content-between align-items-center mb-3 bg-white">    
+            <table class="table table-responsive">
+                <tr>
+                    <th>Transaction Id</th>
+                    <th>Order Id</th>
+                    <th>Payment Mode</th>
+                    <th>Ordered Items</th>
+                    <th>Paid Amount</th>
+                    <th>Payment Date</th>
+                    <th>Status</th>
+                </tr>
+                {{#each payment}}
+                <tr>
+                    <td>{{this.transactionId}}</td>
+                    <td>{{this._id}}</td>
+                    <td>{{this.mode}}</td>
+                    <td>{{this.orderedItems}}</td>
+                    <td>{{this.amount}}</td>
+                    <td>{{this.paymentDate}}</td>
+                    <td>{{this.status}}</td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+    </div>
+</body>
+</html>

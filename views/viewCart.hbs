@@ -61,9 +61,9 @@
     </div>
     {{#if cart}}
     {{!-- <center>
-        <a href="/order/checkoutAction">
-        <button class="btn btn-primary">Order Now</button></a>
+        <a href="/order/checkout?gtotal={{gTotal}}"><button class="btn btn-success">Buy now</button></a>
     </center> --}}
+    
     <div class="container">
         <center>
             <form action="/order/pay" method="post">
