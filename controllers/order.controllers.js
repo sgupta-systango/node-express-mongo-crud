@@ -7,10 +7,37 @@ const carts = require('../models/cart')
 const orders = require('../models/order')
 const payments = require('../models/payment')
 
+//function to render on checkout page with userdata & cart total
 module.exports.checkout = async(req, res) => {
-    const { gtotal } = req.query;
-    const result = await users.findById(req.session.user._doc._id);
-    res.render('checkout', { user: result, gtotal: gtotal, uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin, msg1: req.flash('msg1') })
+    try {
+        const userData = await users.findById(req.session.user._doc._id);
+        const result = await carts.aggregate([{
+                $lookup: {
+                    from: 'allproducts',
+                    localField: 'productId',
+                    foreignField: '_id',
+                    as: 'product'
+                }
+            },
+            {
+                $match: {
+                    userId: mongoose.Types.ObjectId(req.session.user._doc._id)
+                }
+            },
+            {
+                $unwind: '$product',
+            },
+            {
+                $group: {
+                    _id: null,
+                    grandTotal: { $sum: { $multiply: [{ $toInt: '$quantity' }, { $toInt: '$product.price' }] } }
+                }
+            }
+        ]);
+        res.render('checkout', { user: userData, gtotal: result[0].grandTotal, uid: req.session.user._doc.email, isAdmin: req.session.user.isAdmin, msg1: req.flash('msg1') })
+    } catch (err) {
+        res.json({ error: err.toString() })
+    }
 }
 
 //function to initiate payment
@@ -55,6 +82,7 @@ module.exports.pay = (req, res) => {
                     status: charge.status
                 })
                 await newPayment.save()
+
                 const result = await carts.aggregate([{
                         $lookup: {
                             from: 'allproducts',
@@ -75,7 +103,6 @@ module.exports.pay = (req, res) => {
                 const fprice = result.map((rec) => {
                     return rec.product.price * rec.quantity;
                 })
-
                 const finaldata = result.map((rec, index) => {
                     var pair = { fprice: fprice[index] };
                     var objs = {...rec, ...pair }
@@ -95,6 +122,7 @@ module.exports.pay = (req, res) => {
                     })
                     newOrder.save()
                 })
+
                 const delCart = await carts.deleteMany({ userId: req.session.user._doc._id });
                 if (delCart.deletedCount !== 0) {
                     req.flash('msg2', 'Order Placed')
