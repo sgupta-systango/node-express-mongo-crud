@@ -6,6 +6,7 @@ const userSchema = mongoose.Schema({
     name: { type: String, require: true },
     email: { type: String, unique: true, require: true },
     mobile: { type: String, unique: true, require: true },
+    stripeCustomerId: String,
     address: String,
     country: String,
     state: String,

@@ -1,6 +1,6 @@
 const { response, request } = require("express")
+const stripe = require('stripe')('sk_test_GrF1OPlJ39fDLRmLLyFYaWIM00gGq6a8Tj')
 const config = require('../config/const')
-const flash = require('connect-flash')
 
 //importing user model
 const user = require('../models/user')
@@ -14,11 +14,20 @@ module.exports.signup = (req, res) => {
 module.exports.signupAction = (req, res, next) => {
     try {
         const { name, email, mobile, password } = req.body;
+
+        const customer = await stripe.customers.create({
+            name: name,
+            email: email,
+            phone: mobile,
+            description: 'My Stripe Test Customer (created for API docs)'
+        });
+
         const newUser = new user({
             name: name,
             email: email.toLowerCase(),
             mobile: mobile,
-            role: 'user'
+            role: 'user',
+            stripeCustomerId: customer.id
         });
         newUser.setPassword(password);
         newUser.save().then((data) => {

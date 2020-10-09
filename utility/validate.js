@@ -119,8 +119,8 @@ module.exports.checkoutForm = async(req, res, next) => {
             country: joi.string().min(3).max(30).trim().required(),
             state: joi.string().min(3).max(30).trim().required(),
             district: joi.string().min(3).max(30).trim().required(),
-            zip: joi.string().min(3).max(30).trim().required(),
-        })
+            zip: joi.string().min(3).max(30).trim().required()
+        }).options({ allowUnknown: true });
         await validate.validateAsync(req.body);
         return next();
     } catch (err) {

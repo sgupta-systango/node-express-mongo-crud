@@ -43,13 +43,26 @@ module.exports.checkout = async(req, res) => {
 //function to initiate payment
 module.exports.pay = (req, res) => {
     try {
-        const token = req.body.stripeToken;
         const { name, email, mobile, address, country, state, district, zip, amount } = req.body;
+        const token = req.body.stripeToken;
+        console.log(token);
+
+        const customer = await stripe.customers.retrieve(
+            req.session.user._doc.stripeCustomerId
+        );
+        console.log(customer);
+
+        const card = await stripe.customers.createSource(customer.id, {
+            source: token
+        });
+        console.log(card);
+
         console.log(amount);
         stripe.charges.create({
             amount: amount,
             currency: "inr",
-            source: token,
+            source: card.id,
+            customer: customer.id,
             shipping: {
                 address: {
                     country: country,
