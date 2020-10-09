@@ -8,6 +8,7 @@ const upload = require('express-fileupload')
 const flash = require('connect-flash')
 const handlebars = require('handlebars')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
+const dotEnv = require('dotenv')
 
 //importing dbconnect module
 const dbconnect = require('./config/dbconnect')
@@ -30,11 +31,14 @@ const Carts = require('./routes/cart.routes')
 //importing order routes
 const Orders = require('./routes/order.routes')
 
-//defining port
-const PORT = process.env.PORT || 5000;
-
 //create app of express js
 const app = express();
+
+// dotenv configuration
+dotEnv.config({
+    path: '.env',
+    encoding: 'utf8'
+});
 
 //configure view engine as hbs
 app.set('views', path.join(__dirname, 'views'))
@@ -94,6 +98,6 @@ app.get('*', (req, res) => {
 })
 
 //server configuration
-app.listen(PORT, () => {
-    console.log(`Server started at http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server started at http://localhost:${process.env.PORT}`);
 })

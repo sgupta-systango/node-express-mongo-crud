@@ -1,5 +1,5 @@
 const { response, request } = require("express")
-const stripe = require('stripe')('sk_test_GrF1OPlJ39fDLRmLLyFYaWIM00gGq6a8Tj')
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const config = require('../config/const')
 
 //importing user model
